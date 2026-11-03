@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dariyabandha
 
-## Getting Started
+A responsive, browser-playable practice board for **Dariyabandha** (also known as the salt-smuggling grid game): attackers try to cross the court while defenders guard the lines and tag them.
 
-First, run the development server:
+The current app is a local, turn-based practice game. It focuses on the board, clear rules, and touch-friendly controls; it does not yet include online multiplayer, accounts, or saved matches.
+
+## Features
+
+- Seven-by-seven intersection board with alternating attacker and defender turns.
+- Legal one-point orthogonal moves, highlighted after selecting a piece.
+- Defenders capture an attacker by moving onto its point.
+- Attackers win by reaching the safe bank; defenders win by tagging every attacker.
+- Arrow-key and on-screen direction-pad controls, plus direct board selection.
+- New-game reset, live turn and piece counts, and a copyable practice-room code.
+- Responsive layout, keyboard focus states, and a live announcement for game updates.
+- A cool mist, deep teal, and coral palette with layouts that adapt from desktop to narrow mobile screens.
+
+## Getting started
+
+### Requirements
+
+- Node.js compatible with the installed Next.js version.
+- npm (the repository includes `package-lock.json`).
+
+### Install and run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to play. To verify a production build:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run lint
+npm run build
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How to play
 
-## Learn More
+1. Attackers take the first turn. Select one of your pieces on the board.
+2. Select one of the highlighted neighboring intersections, or use an arrow key / direction control.
+3. Turns alternate between sides. Pieces move one intersection at a time along the grid lines.
+4. Attackers cannot move onto an occupied point. Defenders may move onto an attacker to tag it.
+5. An attacker reaching the top safe bank wins. Defenders win when every attacker has been tagged.
+6. Choose **New game** to restore the opening positions.
 
-To learn more about Next.js, take a look at the following resources:
+These are the rules implemented by this practice-board prototype; local Dariyabandha rulesets may vary.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+app/
+  game-board.tsx  Interactive client-side game state, rules, and board controls
+  globals.css     Palette, board styling, and responsive layouts
+  layout.tsx      Root document and page metadata
+  page.tsx        Home route
+```
 
-## Deploy on Vercel
+## Technology
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Next.js App Router
+- React
+- TypeScript
+- Tailwind CSS 4 (loaded in `app/globals.css`, with focused custom CSS for the game board)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The home route stays a small server component and renders the interactive game as a client component. Game rules and UI state currently live in that client component, with no external state or service dependency.
+
+## Multiplayer roadmap
+
+The displayed `DARIYA-24` code is a copyable practice-room label only; it does not create or join a network room. A production multiplayer version would need a server-authoritative game model, validated move handling, room membership and authorization, and a real-time transport such as WebSockets or a managed realtime service. Persisted matches would additionally need a database and an explicit match-history policy.
+
+## Accessibility and responsive behavior
+
+Board points are buttons with descriptive labels, legal moves are announced visually and through assistive technology, and the game status is exposed as a live region. The desktop direction pad becomes unnecessary on small touch screens, where pieces can be moved by tapping the board. Reduced-motion preferences are respected.
